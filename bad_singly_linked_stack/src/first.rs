@@ -1,15 +1,15 @@
 /// Naive linked list wont compile
 #[derive(Debug)]
-pub enum Node<T> {
-    Nil,
-    Construct(T, Box<Node<T>>),
+pub struct Node<T> {
+    element: T,
+    next: Option<Box<Node<T>>>,
 }
 impl<T> Node<T> {
-    pub fn cons(element: T, next: Box<Self>) -> Box<Self> {
-        return Box::new(Node::Construct(element, next));
+    pub fn cons(element: T, next: Option<Box<Self>>) -> Option<Box<Self>> {
+        return Some(Box::new(Node(element, next)));
     }
-    pub fn nil() -> Box<Self> {
-        return Box::new(Node::Nil);
+    pub fn nil() -> Option<Box<Self>> {
+        return None;
     }
 }
 
