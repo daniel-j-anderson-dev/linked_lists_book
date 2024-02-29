@@ -1,4 +1,4 @@
-/// Naive linked list wont compile
+/// Naive linked list
 #[derive(Debug)]
 pub struct Node<T> {
     element: T,
