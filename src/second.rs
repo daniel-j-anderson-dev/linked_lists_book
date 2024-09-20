@@ -24,11 +24,10 @@ impl<E> List<E> {
     }
 
     pub fn pop(&mut self) -> Option<E> {
-        let old_head = self.head.take()?;
-
-        self.head = old_head.next;
-
-        Some(old_head.element)
+        self.head.take().map(|popped_node| {
+            self.head = popped_node.next;
+            popped_node.element
+        })
     }
 
     pub fn peek(&self) -> Option<&E> {
