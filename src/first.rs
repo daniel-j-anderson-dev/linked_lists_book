@@ -1,8 +1,13 @@
+use std::mem;
+
 pub struct List<E> {
     head: Link<E>,
 }
 
-type Link<E> = Option<Box<Node<E>>>;
+enum Link<E> {
+    Empty,
+    More(Box<Node<E>>),
+}
 
 struct Node<E> {
     element: E,
@@ -11,12 +16,12 @@ struct Node<E> {
 
 impl<E> List<E> {
     pub const fn new() -> Self {
-        Self { head: None }
+        Self { head: Link::Empty }
     }
 
     pub fn push(&mut self, element: E) {
         // take the current head off the list.
-        let old_head = self.head.take();
+        let old_head = mem::replace(&mut self.head, Link::Empty);
 
         // create the new head specifying the old head will come next
         let new_head = Box::new(Node {
@@ -25,12 +30,15 @@ impl<E> List<E> {
         });
 
         // set the current head of the list to the new head
-        self.head = Some(new_head);
+        self.head = Link::More(new_head);
     }
 
     pub fn pop(&mut self) -> Option<E> {
         // take the current head off the list
-        let popped_node = self.head.take()?;
+        let popped_node = match mem::replace(&mut self.head, Link::Empty) {
+            Link::Empty => return None,
+            Link::More(node) => node,
+        };
 
         // set the current head to the Node after the popped_node
         self.head = popped_node.next;
@@ -43,19 +51,19 @@ impl<E> List<E> {
 impl<T> Drop for List<T> {
     fn drop(&mut self) {
         // start by taking off the head
-        let mut current_link = self.head.take();
+        let mut current_link = mem::replace(&mut self.head, Link::Empty);
 
         loop {
             match current_link {
-                Some(mut current_node) => {
+                Link::More(mut current_node) => {
                     // take the next node
-                    current_link = current_node.next.take()
+                    current_link = mem::replace(&mut current_node.next, Link::Empty)
 
                     // `current_node` is dropped.
                     // Since `current_node` doesn't have a next node anymore
                     // there is no unbounded recursion when `current_node` is dropped.
                 }
-                None => break,
+                Link::Empty => break,
             }
         }
     }
@@ -67,7 +75,7 @@ mod test {
 
     #[test]
     fn drop_large_list() {
-        let mut list = List::<usize>::new();
+        let mut list = List::new();
 
         for i in 0..100000 {
             list.push(i);
@@ -78,7 +86,7 @@ mod test {
 
     #[test]
     fn push_and_pop() {
-        let mut list = List::<usize>::new();
+        let mut list = List::new();
 
         for i in 0..100 {
             list.push(i);
