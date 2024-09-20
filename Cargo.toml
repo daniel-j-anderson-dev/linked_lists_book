@@ -1,3 +1,4 @@
-[workspace]
-resolver = "2"
-members = ["bad_singly_linked_stack"]
+[package]
+name = "linked_lists_book"
+version = "0.1.0"
+edition = "2021"

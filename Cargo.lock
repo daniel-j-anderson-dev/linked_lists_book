@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "bad_singly_linked_stack"
+name = "linked_lists_book"
 version = "0.1.0"
