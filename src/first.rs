@@ -1,20 +1,20 @@
-pub struct List<T> {
-    head: Link<T>,
+pub struct List<E> {
+    head: Link<E>,
 }
 
-type Link<T> = Option<Box<Node<T>>>;
+type Link<E> = Option<Box<Node<E>>>;
 
-struct Node<T> {
-    element: T,
-    next: Link<T>,
+struct Node<E> {
+    element: E,
+    next: Link<E>,
 }
 
-impl<T> List<T> {
+impl<E> List<E> {
     pub const fn new() -> Self {
         Self { head: None }
     }
 
-    pub fn push(&mut self, element: T) {
+    pub fn push(&mut self, element: E) {
         // take the current head off the list.
         let old_head = self.head.take();
 
@@ -28,7 +28,7 @@ impl<T> List<T> {
         self.head = Some(new_head);
     }
 
-    pub fn pop(&mut self) -> Option<T> {
+    pub fn pop(&mut self) -> Option<E> {
         // take the current head off the list
         let popped_node = self.head.take()?;
 
@@ -76,4 +76,3 @@ mod test {
         drop(list);
     }
 }
-
