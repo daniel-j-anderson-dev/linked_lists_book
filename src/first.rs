@@ -75,4 +75,17 @@ mod test {
 
         drop(list);
     }
+
+    #[test]
+    fn push_and_pop() {
+        let mut list = List::<usize>::new();
+
+        for i in 0..100 {
+            list.push(i);
+        }
+
+        for i in (0..100).rev() {
+            assert_eq!(Some(i), list.pop());
+        }
+    }
 }
